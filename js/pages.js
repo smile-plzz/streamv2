@@ -91,7 +91,7 @@ export function renderMood({ onOpen }) {
   const freeText = el('div', { class: 'mood-freetext' }, [
     el('input', { type: 'text', id: 'mood-text-input', placeholder: "Or describe how you're feeling…", 'aria-label': "Describe how you're feeling" }),
     el('button', { class: 'btn-ghost', id: 'mood-text-btn' }, 'Match'),
-    el('button', { class: 'btn-ghost', id: 'mood-surprise-btn' }, [icon('star', { size: 13 }), ' Surprise Me']),
+    el('button', { class: 'btn-ghost', id: 'mood-surprise-btn' }, [icon('', { size: 13 }), ' Surprise Me']),
   ]);
   root.appendChild(freeText);
 
