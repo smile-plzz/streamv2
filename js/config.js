@@ -4,7 +4,7 @@
 
 // Public OMDb demo key (same one shipped in the original app). Swap for your
 // own free key from https://www.omdbapi.com/apikey.aspx if you hit rate limits.
-export const OMDB_KEY = '1a9ba45f';
+export const OMDB_KEY = 'f5dad388';
 
 export const ROW_SIZE = 14;
 export const CACHE_TTL_MS = 10 * 60 * 1000; // 10 min in-memory cache for OMDb lookups
