@@ -10,6 +10,7 @@ import { icon } from './components/icons.js';
 import {
   POPULAR_MOVIES, POPULAR_TV, TRENDING_SEED, GENRE_ROWS, ROW_SIZE,
 } from './config.js';
+import { MOOD_PALETTE, fetchMoodResults, guessMoodFromText } from './moods.js';
 
 function mount() { return qs('#main-content'); }
 function clear() { mount().innerHTML = ''; }
@@ -24,6 +25,14 @@ export async function renderHome({ onOpen, navigate }) {
     const section = buildGridSection('Continue Watching', cw, { onOpen, onRemove: (m) => { storage.removeFromContinue(m.imdbID); renderHome({ onOpen, navigate }); }, badge: () => 'Resume', asRow: true });
     root.appendChild(section);
   }
+
+  root.appendChild(el('button', { class: 'mood-teaser', onclick: () => navigate('mood') }, [
+    el('span', { class: 'mood-teaser-emoji' }, '🎭'),
+    el('span', {}, [
+      el('strong', {}, 'Not sure what to watch? '),
+      'Tell us your mood and we\'ll find precise matches →',
+    ]),
+  ]));
 
   await renderRow(root, {
     title: 'Trending Now',
@@ -68,6 +77,79 @@ export async function renderGenre(genreId, { onOpen }) {
   grid.innerHTML = '';
   if (!items.length) { grid.appendChild(makeEmptyState('film', 'No titles found for this genre right now.')); return; }
   items.forEach(m => grid.appendChild(makeCard(m, { onOpen })));
+}
+
+// -------------------------------------------------------------------- MOOD
+export function renderMood({ onOpen }) {
+  clear();
+  const root = mount();
+
+  root.appendChild(pageHeader('How are you feeling?'));
+  root.appendChild(el('p', { class: 'mood-desc' },
+    "Pick a mood and we'll search several genre/keyword angles, verify each candidate's real genre, and rank the best matches — not just titles that happen to contain the word."));
+
+  const freeText = el('div', { class: 'mood-freetext' }, [
+    el('input', { type: 'text', id: 'mood-text-input', placeholder: "Or describe how you're feeling…", 'aria-label': "Describe how you're feeling" }),
+    el('button', { class: 'btn-ghost', id: 'mood-text-btn' }, 'Match'),
+    el('button', { class: 'btn-ghost', id: 'mood-surprise-btn' }, [icon('star', { size: 13 }), ' Surprise Me']),
+  ]);
+  root.appendChild(freeText);
+
+  const moods = Object.keys(MOOD_PALETTE);
+  const grid = el('div', { class: 'mood-grid', id: 'mood-grid' });
+  moods.forEach(mood => {
+    const p = MOOD_PALETTE[mood];
+    grid.appendChild(el('button', {
+      class: 'mood-btn',
+      'data-mood': mood,
+      title: p.desc,
+    }, [el('span', { class: 'emoji' }, p.emoji), ' ', mood]));
+  });
+  root.appendChild(grid);
+
+  const status = el('p', { id: 'mood-status', style: 'color:var(--text-muted);font-size:.85rem;padding:0 var(--sp-6);min-height:1.2em' });
+  root.appendChild(status);
+  const resultsGrid = el('div', { class: 'movies-grid', id: 'mood-results' });
+  root.appendChild(resultsGrid);
+
+  let requestSeq = 0;
+  async function selectMood(mood) {
+    const seq = ++requestSeq;
+    grid.querySelectorAll('.mood-btn').forEach(b => b.classList.toggle('active', b.dataset.mood === mood));
+    const p = MOOD_PALETTE[mood];
+    status.textContent = `Finding precise matches for ${mood.toLowerCase()} (${p.label.toLowerCase()})…`;
+    resultsGrid.innerHTML = '';
+    resultsGrid.appendChild(makeSkeletons(12));
+
+    const results = await fetchMoodResults(mood);
+    if (seq !== requestSeq) return; // superseded by a newer pick
+    resultsGrid.innerHTML = '';
+    if (!results.length) {
+      status.textContent = `No matches found for ${mood.toLowerCase()} right now.`;
+      resultsGrid.appendChild(makeEmptyState('film', 'Try another mood, or describe what you want above.'));
+      return;
+    }
+    status.textContent = `Showing movies for: ${mood} — ${p.desc}`;
+    results.forEach(m => resultsGrid.appendChild(makeCard(m, { onOpen })));
+  }
+
+  grid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.mood-btn');
+    if (btn) selectMood(btn.dataset.mood);
+  });
+
+  qs('#mood-surprise-btn').addEventListener('click', () => {
+    const random = moods[Math.floor(Math.random() * moods.length)];
+    selectMood(random);
+  });
+
+  const textInput = qs('#mood-text-input');
+  const runTextMatch = () => {
+    if (!textInput.value.trim()) return;
+    selectMood(guessMoodFromText(textInput.value.trim()));
+  };
+  qs('#mood-text-btn').addEventListener('click', runTextMatch);
+  textInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') runTextMatch(); });
 }
 
 // ------------------------------------------------------------------ BROWSE

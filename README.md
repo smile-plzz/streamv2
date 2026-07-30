@@ -7,6 +7,7 @@ A minimalist movie & TV discovery app. Search titles via [OMDb](https://www.omdb
 ## Features
 
 - **Discovery** — home page with Continue Watching, Trending, genre rows (Action, Sci-Fi, Drama, Comedy, Thriller), Popular Movies/TV
+- **Mood-based recommendations** — pick from 29 moods (or describe how you're feeling in a few words); searches several genre/keyword angles per mood, verifies each candidate's real OMDb genre via a cached detail lookup, and ranks by genre-match count + rating — not just titles whose name happens to contain the word. Ported from [MovieRecommendationBasedOnMood](https://github.com/smile-plzz/MovieRecommendationBasedOnMood)'s client-only recommendation engine (`js/moods.js`); results open directly in this app's streaming player rather than linking out.
 - **Search** — hero + nav search (submit on Enter or click), movie/TV type filter, paginated results
 - **Streaming** — multi-source iframe player with instant source switching, season/episode selector for TV, "open in new tab" fallback, and the last working source is remembered
 - **Watchlist & Continue Watching** — stored locally in `localStorage`, never leaves the device
@@ -29,10 +30,11 @@ js/
   config.js             API key, catalog seed lists, video source registry
   api.js                 OMDb client with in-memory TTL cache + request de-dupe
   sources.js              Embed URL builder per provider quirk + "last used source" memory
-  storage.js               localStorage: watchlist, continue-watching, theme, recent searches
+  moods.js                 Mood → genre/keyword map + the precision recommendation engine
+  storage.js                 localStorage: watchlist, continue-watching, theme, recent searches, mood detail cache
   store.js                  DOM helpers (`qs`, `qsa`, `el`)
   router.js                 Hash-based router
-  pages.js                   Page renderers (home, browse, genre, search, watchlist, continue)
+  pages.js                   Page renderers (home, browse, genre, mood, search, watchlist, continue)
   main.js                     Bootstrap — wires router → pages, global keyboard shortcuts
   components/
     icons.js                  Inline SVG icon set (no icon-font/CDN dependency)

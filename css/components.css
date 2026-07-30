@@ -2,6 +2,42 @@
    Components — Rows, Cards, Modal, Player, Misc
    ========================================================================== */
 
+/* MOOD */
+.mood-desc { color: var(--text-muted); font-size: .85rem; max-width: 560px; padding: 0 var(--sp-6); margin: -.75rem 0 var(--sp-5); }
+@media (max-width: 700px) { .mood-desc { padding: 0 var(--sp-4); } }
+
+.mood-teaser {
+  display: flex; align-items: center; gap: var(--sp-3); width: calc(100% - 2 * var(--sp-6));
+  margin: 0 var(--sp-6) var(--sp-6); background: var(--accent-soft); border: 1px solid var(--accent-ring);
+  border-radius: var(--r-lg); padding: var(--sp-4) var(--sp-5); color: var(--text); font-size: var(--fs-sm);
+  text-align: left; transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.mood-teaser:hover { border-color: var(--accent); transform: translateY(-1px); }
+.mood-teaser-emoji { font-size: 1.4rem; flex-shrink: 0; }
+@media (max-width: 700px) { .mood-teaser { width: calc(100% - 2 * var(--sp-4)); margin: 0 var(--sp-4) var(--sp-6); } }
+
+.mood-freetext {
+  display: flex; gap: var(--sp-2); flex-wrap: wrap; padding: 0 var(--sp-6) var(--sp-5);
+}
+.mood-freetext input {
+  flex: 1; min-width: 220px; background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  padding: .65rem 1.1rem; border-radius: var(--r-full); font-size: var(--fs-sm); outline: none;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.mood-freetext input:focus { border-color: var(--accent-ring); }
+@media (max-width: 700px) { .mood-freetext { padding: 0 var(--sp-4) var(--sp-5); } }
+
+.mood-grid { display: flex; flex-wrap: wrap; gap: .55rem; padding: 0 var(--sp-6) var(--sp-5); }
+.mood-btn {
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
+  padding: .5rem 1rem; border-radius: var(--r-full); font-size: .82rem; font-weight: 500;
+  display: inline-flex; align-items: center; gap: .4rem; transition: all var(--dur-fast) var(--ease);
+}
+.mood-btn .emoji { font-size: 1rem; }
+.mood-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.mood-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+@media (max-width: 700px) { .mood-grid { padding: 0 var(--sp-4) var(--sp-5); } }
+
 /* ROW (horizontal scroll) */
 .row-scroller {
   display: flex; gap: var(--sp-3); overflow-x: auto; scroll-behavior: smooth;

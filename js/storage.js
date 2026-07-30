@@ -48,4 +48,16 @@ export const storage = {
     list.unshift(q);
     set('ns_recent', list.slice(0, 8));
   },
+
+  // Durable Genre/rating cache for the mood engine — persists across
+  // sessions (unlike api.js's in-memory TTL cache) to stay frugal against
+  // the shared OMDb demo key's daily request cap.
+  getMoodDetailCache() { return get('ns_mood_cache', {}); },
+  setMoodDetailCache(imdbID, entry) {
+    const cache = this.getMoodDetailCache();
+    cache[imdbID] = entry;
+    const keys = Object.keys(cache);
+    if (keys.length > 400) keys.slice(0, keys.length - 400).forEach(k => delete cache[k]);
+    set('ns_mood_cache', cache);
+  },
 };

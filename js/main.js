@@ -9,7 +9,7 @@ import { initAbout } from './components/about.js';
 import { enableWheelScroll } from './components/row.js';
 import { initRouter, navigate } from './router.js';
 import {
-  renderHome, renderBrowse, renderGenre, renderSearch, renderWatchlist, renderContinue,
+  renderHome, renderBrowse, renderGenre, renderSearch, renderWatchlist, renderContinue, renderMood,
 } from './pages.js';
 
 const onOpen = (movie) => openModal(movie.imdbID, movie.Type || 'movie');
@@ -41,6 +41,7 @@ initRouter(async ({ route, param, query }) => {
   if (route === 'movies') return renderBrowse('movies', { onOpen });
   if (route === 'tv') return renderBrowse('tv', { onOpen });
   if (route === 'genre') return renderGenre(param, { onOpen });
+  if (route === 'mood') return renderMood({ onOpen });
   if (route === 'watchlist') return renderWatchlist({ onOpen });
   if (route === 'continue') return renderContinue({ onOpen });
   if (route === 'search') {

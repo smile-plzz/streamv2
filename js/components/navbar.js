@@ -6,6 +6,7 @@ const ROUTES = [
   { id: 'home', label: 'Home' },
   { id: 'movies', label: 'Movies' },
   { id: 'tv', label: 'TV Shows' },
+  { id: 'mood', label: 'Mood' },
   { id: 'watchlist', label: 'Watchlist' },
   { id: 'continue', label: 'Continue' },
 ];
